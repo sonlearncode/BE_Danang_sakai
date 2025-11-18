@@ -6,14 +6,16 @@ const connectDB = async () => {
         const { MONGO_URI } = ENV;
         if (!MONGO_URI) throw new Error('MONGO_URI is not defined');
 
-        const cnn = await mongoose.connect(MONGO_URI);
+        const cnn = await mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
         console.log('MONGODB CONNECTED:', cnn.connection.host);
     } catch (error) {
-        console.log('Error connection to MONGODB:', error);
-        process.exit(1); // thoát app, lỗi connect db
+        console.error('Error connection to MongoDB:', error.message);
+        process.exit(1);
     }
-}
-
-module.exports = {
-    connectDB
 };
+
+module.exports = { connectDB };
