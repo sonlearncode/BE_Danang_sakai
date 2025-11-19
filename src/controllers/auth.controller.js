@@ -1,4 +1,5 @@
 const authService = require('../services/auth.service');
+const isProduction = process.env.NODE_ENV === "production";
 
 const register = async (req, res) => {
     try {
