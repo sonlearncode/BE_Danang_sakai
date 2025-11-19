@@ -95,6 +95,7 @@ const logout = (req, res) => {
 
 const getMe = async (req, res) => {
     try {
+        console.log(ENV.NODE_ENV);
         return res.status(200).json({
             status: "success",
             user: {
