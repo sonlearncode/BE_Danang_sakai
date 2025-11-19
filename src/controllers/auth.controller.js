@@ -63,8 +63,8 @@ const login = async (req, res) => {
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            secure: isProduction === 'production' ? true : false,    // local = false -> chạy được localhost
-            sameSite: isProduction ? 'None' : 'Lax', // local = Lax, prod = None
+            secure: isProduction,
+            sameSite: isProduction ? 'None' : 'Lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -84,8 +84,8 @@ const login = async (req, res) => {
 const logout = (req, res) => {
     res.clearCookie("jwt", {
         httpOnly: true,
-        secure: isProduction === 'production' ? true : false,    // local = false -> chạy được localhost
-        sameSite: isProduction ? 'None' : 'Lax', // local = Lax, prod = None
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
     });
 
     return res.status(200).json({
