@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { ENV } = require('../lib/env');
 
 const protect = (req, res, next) => {
     const token = req.cookies.jwt;
@@ -8,7 +9,7 @@ const protect = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, ENV.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {
