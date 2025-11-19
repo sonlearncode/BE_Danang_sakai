@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const ENV = {
+    NODE_ENV: process.env.NODE_ENV || 'production',
     PORT: process.env.PORT,
     MONGO_URI: process.env.MONGO_URI,
     CLIENT_URL: process.env.CLIENT_URL,

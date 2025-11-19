@@ -1,5 +1,5 @@
 const authService = require('../services/auth.service');
-const isProduction = process.env.NODE_ENV === "production";
+const { ENV } = require('../lib/env');
 
 const register = async (req, res) => {
     try {
@@ -62,7 +62,7 @@ const login = async (req, res) => {
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            secure: isProduction ? true : false,    // local = false -> chạy được localhost
+            secure: ENV.NODE_ENV === 'production' ? true : false,    // local = false -> chạy được localhost
             sameSite: isProduction ? 'None' : 'Lax', // local = Lax, prod = None
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
@@ -83,7 +83,7 @@ const login = async (req, res) => {
 const logout = (req, res) => {
     res.clearCookie("jwt", {
         httpOnly: true,
-        secure: isProduction ? true : false,    // local = false -> chạy được localhost
+        secure: ENV.NODE_ENV === 'production' ? true : false,    // local = false -> chạy được localhost
         sameSite: isProduction ? 'None' : 'Lax', // local = Lax, prod = None
     });
 
