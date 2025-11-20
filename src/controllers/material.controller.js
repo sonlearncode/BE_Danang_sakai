@@ -1,10 +1,9 @@
 const materialService = require('../services/material.service');
 
+
 const uploadMaterial = async (req, res, next) => {
     try {
-        // req.file chứa thông tin file từ Multer
-        // req.body chứa title, subjectId, topicId
-        // req.user.id lấy từ middleware protect
+        // req.body bây giờ sẽ chứa { title, subject: 'toan-hoc', topic: 'ham-so' }
         const result = await materialService.uploadMaterial(req.user.id, req.file, req.body);
 
         return res.status(201).json({
@@ -13,14 +12,8 @@ const uploadMaterial = async (req, res, next) => {
             data: result
         });
     } catch (error) {
-        // nếu có lỗi và file đã lỡ lên Cloudinary thì nên xóa đi (Optional logic)
+        // Nếu có lỗi, next() sẽ chuyển sang error handler
         next(error);
-        console.log("controller error:", error.message);
-        console.log("stack:", error.stack);
-        return res.status(error.statusCode || 400).json({
-            status: "error",
-            message: error.message
-        });
     }
 };
 
@@ -42,9 +35,19 @@ const deleteMaterial = async (req, res) => {
     }
 };
 
-const getMaterials = async (req, res) => {
+const getMaterialsBySlug = async (req, res) => {
     try {
-        const result = await materialService.getAllMaterials(req.query);
+        // Lấy slug từ đường dẫn URL
+        const { subjectSlug, topicSlug } = req.params;
+
+        // Tạo query object giả lập như query string
+        const queryInput = {
+            subject: subjectSlug,
+            topic: topicSlug
+        };
+
+        // Gọi lại Service cũ
+        const result = await materialService.getAllMaterials(queryInput);
 
         return res.status(200).json({
             status: "success",
@@ -62,5 +65,5 @@ const getMaterials = async (req, res) => {
 module.exports = {
     uploadMaterial,
     deleteMaterial,
-    getMaterials
+    getMaterialsBySlug,
 };

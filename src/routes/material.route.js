@@ -12,37 +12,35 @@ const uploadMiddleware = uploadCloud.single('file');
 router.post(
     '/upload',
     protect,
-    // middleware Wrapper để bắt lỗi upload
+    // 1. Middleware Wrapper (Bắt lỗi upload tận tay)
     (req, res, next) => {
         uploadMiddleware(req, res, (err) => {
             if (err) {
-                // Nếu có lỗi từ Cloudinary/Multer
                 console.error("[UPLOAD ERROR LOG]:");
 
                 if (err instanceof multer.MulterError) {
-                    // Lỗi của Multer (ví dụ file quá lớn)
                     console.error("Multer Error:", err.message);
                     return res.status(400).json({
                         status: "error",
                         message: `Lỗi upload file: ${err.message}`
                     });
                 } else if (err) {
-                    // Lỗi từ Cloudinary hoặc lỗi không xác định
-                    // Cố gắng parse object lỗi ra JSON để đọc
                     const errorDetails = JSON.stringify(err, null, 2);
                     console.error("Cloudinary/Unknown Error:", errorDetails);
 
                     return res.status(500).json({
                         status: "error",
                         message: "Lỗi xảy ra khi upload file lên Cloudinary",
-                        debug_error: err.message || err // Trả về client để debug
+                        debug_error: err.message || err
                     });
                 }
             }
             next();
         });
     },
+    // 2. Validate (Đã sửa trong validation.js để chấp nhận slug)
     validate(materialValidation.uploadMaterial),
+    // 3. Controller (Đã sửa trong service.js để tìm ID từ slug)
     materialController.uploadMaterial
 );
 
@@ -54,10 +52,11 @@ router.delete(
     materialController.deleteMaterial
 );
 
-// GET /api/v1/materials?subjectId=...&topicId=...
+// Đặt biến là :subjectSlug và :topicSlug
 router.get(
-    '/',
-    materialController.getMaterials
+    '/:subjectSlug/:topicSlug',
+    validate(materialValidation.getMaterial),
+    materialController.getMaterialsBySlug
 );
 
 module.exports = router;

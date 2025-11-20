@@ -1,21 +1,21 @@
 const Joi = require('joi');
-
 const uploadMaterial = Joi.object({
     body: Joi.object({
         title: Joi.string().required().trim().messages({
             'string.empty': 'Tên tài liệu không được để trống',
             'any.required': 'Tên tài liệu là bắt buộc'
         }),
-        subjectId: Joi.string().hex().length(24).required().messages({
-            'string.length': 'Subject ID không hợp lệ',
-            'any.required': 'Vui lòng chọn môn học'
+        // Thay đổi từ ID sang Slug
+        subject: Joi.string().required().messages({
+            'string.empty': 'Vui lòng nhập slug môn học (VD: toan-hoc)',
+            'any.required': 'Slug môn học là bắt buộc'
         }),
-        topicId: Joi.string().hex().length(24).required().messages({
-            'string.length': 'Topic ID không hợp lệ',
-            'any.required': 'Vui lòng chọn chuyên đề'
+        topic: Joi.string().required().messages({
+            'string.empty': 'Vui lòng nhập slug chuyên đề (VD: ham-so)',
+            'any.required': 'Slug chuyên đề là bắt buộc'
         })
     })
-    // file upload không validate bằng Joi được, mà đã validate bằng Multer
+    // file upload validation xử lý bởi Multer
 });
 
 const deleteMaterial = Joi.object({
@@ -26,7 +26,21 @@ const deleteMaterial = Joi.object({
     })
 });
 
+const getMaterial = Joi.object({
+    body: Joi.object({
+        subject: Joi.string().required().messages({
+            'string.empty': 'Vui lòng nhập slug môn học (VD: toan-hoc)',
+            'any.required': 'Slug môn học là bắt buộc'
+        }),
+        topic: Joi.string().required().messages({
+            'string.empty': 'Vui lòng nhập slug chuyên đề (VD: ham-so)',
+            'any.required': 'Slug chuyên đề là bắt buộc'
+        })
+    })
+});
+
 module.exports = {
     uploadMaterial,
-    deleteMaterial
+    deleteMaterial,
+    getMaterial,
 };
